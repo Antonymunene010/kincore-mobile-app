@@ -1,41 +1,56 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_fonts.dart';
-import '../../../core/utils/app_text.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/custom_icon_button.dart';
 import 'controller/create_post_controller.dart';
-import 'widget/setting_selection_tile.dart'; // Same controller use kar sakte ho
+import 'widget/setting_selection_tile.dart';
 
 class PostSettingScreen extends StatelessWidget {
   const PostSettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Get.find ka use kiya hai kyunki controller pehle se bana hoga
     final controller = Get.find<CreatePostController>();
+
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     final double screenW = Get.width;
     final double screenH = Get.height;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: colors.surface, // Theme based background
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        centerTitle: false,
+        backgroundColor: colors.surface,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(Icons.arrow_back_ios, color: colors.onSurface, size: 18),
           onPressed: () => Get.back(),
         ),
         title: AppText(
-          "Post Setting",
+          'postSettings.title'.tr,
           fontSize: 20,
           fontWeight: AppFonts.semiBold,
+          color: colors.onSurface,
         ),
+        // actions: [
+        //   CustomIconButton(
+        //     iconName: 'bell.svg',
+        //     onTap: () {},
+        //   ),
+        //   const SizedBox(width: 10),
+        // ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(screenW * 0.05),
+        // Responsive padding using screen width
+        padding: EdgeInsets.symmetric(horizontal: screenW * 0.05, vertical: 15),
         child: Column(
           children: [
             // --- MAIN CONTENT BOX ---
@@ -43,113 +58,85 @@ class PostSettingScreen extends StatelessWidget {
               padding: EdgeInsets.all(screenW * 0.05),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.grey.shade200, width: 1.5),
+                color: colors.surface, // Adapt to theme
+                border: Border.all(
+                    color: colors.outlineVariant.withOpacity(0.5),
+                    width: 1.5
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  )
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppText(
-                    "Post Settings",
+                    'postSettings.postSettings'.tr,
                     fontSize: 24,
                     fontWeight: AppFonts.medium,
+                    color: colors.onSurface,
                   ),
                   SizedBox(height: screenH * 0.03),
 
                   // Section 1: Who can see
-                  AppText(
-                    "Who can see your posts?",
-                    fontWeight: AppFonts.medium,
-                    fontSize: 16,
-                  ),
+                  _buildSectionHeader(context, 'postSettings.whoCanSee'.tr),
                   SizedBox(height: screenH * 0.02),
                   Obx(
-                    () => Column(
+                        () => Column(
                       children: [
                         SettingSelectionTile(
-                          title: "Any Scholarr",
-                          icon: CupertinoIcons.globe,
-                          isSelected: controller.visibility.value == "any",
-                          onTap: () => controller.visibility.value = "any",
+                          title: 'postSettings.visibility.public'.tr,
+                          isSelected: controller.visibility.value == "Public",
+                          onTap: () => controller.visibility.value = "Public",
                         ),
                         SettingSelectionTile(
-                          title: "Your Followers only",
-                          icon: CupertinoIcons.person_2,
-                          isSelected:
-                              controller.visibility.value == "followers",
-                          onTap: () =>
-                              controller.visibility.value = "followers",
+                          title: 'postSettings.visibility.friends'.tr,
+                          isSelected: controller.visibility.value == "Friends",
+                          onTap: () => controller.visibility.value = "Friends",
                         ),
                         SettingSelectionTile(
-                          title: "Only me",
-                          icon: CupertinoIcons.person,
+                          title: 'postSettings.visibility.friendsExcept'.tr,
                           isSelected: controller.visibility.value == "me",
                           onTap: () => controller.visibility.value = "me",
+                        ),
+                        SettingSelectionTile(
+                          title: 'postSettings.visibility.specificFriends'.tr,
+                          isSelected: controller.visibility.value == "sf",
+                          onTap: () => controller.visibility.value = "sf",
                         ),
                       ],
                     ),
                   ),
 
-                  /// Who can comment Dropdown style tile
-                  // Container(
-                  //   padding: const EdgeInsets.symmetric(
-                  //     horizontal: 16,
-                  //     vertical: 14,
-                  //   ),
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     border: Border.all(color: Colors.grey.shade300),
-                  //   ),
-                  //   child: Row(
-                  //     children: [
-                  //       Icon(
-                  //         CupertinoIcons.chat_bubble_2,
-                  //         color: AppColors.blackColor,
-                  //       ),
-                  //       const SizedBox(width: 12),
-                  //       Expanded(
-                  //         child: AppText("Who can comment?", fontSize: 16),
-                  //       ),
-                  //       const Icon(
-                  //         Icons.keyboard_arrow_down,
-                  //         color: Colors.grey,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
                   SizedBox(height: screenH * 0.03),
 
                   // Section 2: Who can comment
-                  AppText(
-                    "Who can comment on this post?",
-                    fontWeight: AppFonts.medium,
-                    fontSize: 16,
-                  ),
+                  _buildSectionHeader(context, 'postSettings.whoCanComment'.tr),
                   SizedBox(height: screenH * 0.02),
                   Obx(
-                    () => Column(
+                        () => Column(
                       children: [
                         SettingSelectionTile(
-                          title: "Any Scholarr",
+                          title: 'postSettings.comments.followersOnly'.tr,
                           icon: CupertinoIcons.globe,
-                          isSelected: controller.commentPrivacy.value == "any",
-                          onTap: () => controller.commentPrivacy.value = "any",
+                          isSelected: controller.commentPrivacy.value == "followers",
+                          onTap: () => controller.commentPrivacy.value = "followers",
                         ),
                         SettingSelectionTile(
-                          title: "Your Followers only",
+                          title: 'postSettings.comments.friends'.tr,
                           icon: CupertinoIcons.person_2,
-                          isSelected:
-                              controller.commentPrivacy.value == "followers",
-                          onTap: () =>
-                              controller.commentPrivacy.value = "followers",
+                          isSelected: controller.commentPrivacy.value == "Friends",
+                          onTap: () => controller.commentPrivacy.value = "Friends",
                         ),
                         SettingSelectionTile(
-                          title: "Nobody",
-                          icon: CupertinoIcons.person_crop_circle_badge_xmark,
-                          isSelected:
-                              controller.commentPrivacy.value == "nobody",
-                          onTap: () =>
-                              controller.commentPrivacy.value = "nobody",
+                          title: 'postSettings.comments.chosenFriends'.tr,
+                          icon:  CupertinoIcons.person,
+                          isSelected: controller.commentPrivacy.value == "Chosen Friends",
+                          onTap: () => controller.commentPrivacy.value = "Chosen Friends",
                         ),
                       ],
                     ),
@@ -162,15 +149,24 @@ class PostSettingScreen extends StatelessWidget {
 
             // Save Button
             CustomButton(
-              text: "Save Changes",
+              text: 'postSettings.saveChanges'.tr,
               onPressed: () {
-                // Logic to save settings
                 Get.back();
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    final colors = Theme.of(context).colorScheme;
+    return AppText(
+      title,
+      fontWeight: AppFonts.medium,
+      fontSize: 14,
+      color: colors.onSurface.withOpacity(0.8), // Softer color for headers
     );
   }
 }

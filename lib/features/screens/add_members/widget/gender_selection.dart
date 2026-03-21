@@ -12,9 +12,9 @@ class GenderSelectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() => Row(
       children: [
-        _buildGenderButton("Father"),
+        _buildGenderButton('common.father'.tr),
         const SizedBox(width: 12),
-        _buildGenderButton("Mother"),
+        _buildGenderButton('common.mother'.tr),
       ],
     ));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../../core/utils/app_fonts.dart';
-import '../../../../core/utils/app_text.dart';
+import '../../../../core/widgets/app_text.dart';
 
 class AccessInfoCard extends StatelessWidget {
   final IconData icon;
@@ -18,13 +19,16 @@ class AccessInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.outlineVariant.withOpacity(0.5)),
       ),
       child: Row(
         children: [
@@ -41,8 +45,8 @@ class AccessInfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText(title, fontSize: 12, fontWeight: AppFonts.semiBold),
-                AppText(subtitle, fontSize: 10, color: Colors.grey.shade600,fontWeight: AppFonts.regular,),
+                AppText(title.tr, fontSize: 12, fontWeight: AppFonts.semiBold),
+                AppText(subtitle.tr, fontSize: 10, color: colors.onSurfaceVariant, fontWeight: AppFonts.regular),
               ],
             ),
           ),

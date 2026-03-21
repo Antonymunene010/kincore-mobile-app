@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_text.dart';
+import 'app_text.dart';
 import '../../../core/utils/app_fonts.dart';
 
 class PhoneInputField extends StatelessWidget {
@@ -21,8 +21,7 @@ class PhoneInputField extends StatelessWidget {
             bottom: Get.height * 0.01,
           ),
           child: AppText(
-            "Phone Number",
-            fontSize: 16,
+            'addMember.phoneNumber'.tr,            fontSize: 16,
             fontWeight: AppFonts.bold,
           ),
         ),
@@ -57,8 +56,7 @@ class PhoneInputField extends StatelessWidget {
                   keyboardType: TextInputType.phone, // Keyboard fix
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    hintText: "00000 00000",
-                    hintStyle: TextStyle(color: AppColors.greyColor.withOpacity(0.5)),
+                    hintText: 'addMember.phoneHint'.tr,                    hintStyle: TextStyle(color: AppColors.greyColor.withOpacity(0.5)),
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                     suffixIcon: const Icon(
                       Icons.check,

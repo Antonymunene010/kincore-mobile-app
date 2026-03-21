@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_fonts.dart';
-import '../../../../core/utils/app_text.dart';
+import '../../../../core/widgets/app_text.dart';
 
 class RoleSelectionTab extends StatelessWidget {
-  final List<String> roles = ["Admin", "Member", "Guest"];
-  final RxString selectedRole;
+  final List<String> roles = ["role.admin", "role.member", "role.guest"];  final RxString selectedRole;
   final Function(String) onRoleChanged;
 
   RoleSelectionTab({

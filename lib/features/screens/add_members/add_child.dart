@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kincore_app/core/utils/app_colors.dart';
 import 'package:kincore_app/features/screens/add_members/add_family_member.dart';
 import '../../../core/utils/app_fonts.dart';
-import '../../../core/utils/app_text.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_icon_button.dart';
 import '../../../core/widgets/custom_input_field.dart';
@@ -17,7 +16,10 @@ class AddChildScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // UI Controllers
+    final controller = Get.put(AddChildController());
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     final firstNameController = TextEditingController();
     final lastNameController = TextEditingController();
     final dobController = TextEditingController();
@@ -28,25 +30,22 @@ class AddChildScreen extends StatelessWidget {
     final qualificationController = TextEditingController();
     final studyLocationController = TextEditingController();
 
-    final controller = Get.put(AddChildController());
-
-    // RESPONSIVE VARIABLES
     final double screenW = Get.width;
     final double screenH = Get.height;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: colors.background,
         surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: colors.onSurface, size: 20),
           onPressed: () => Get.back(),
         ),
         title: AppText(
-          "Add Child",
+          'addMember.addChildTitle'.tr,
           fontSize: 20,
           fontWeight: AppFonts.semiBold,
         ),
@@ -69,19 +68,18 @@ class AddChildScreen extends StatelessWidget {
                     padding: EdgeInsets.all(screenW * 0.04),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: colors.outlineVariant),
+                      color: colors.surface,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppText(
-                          "Basic Information",
+                          'addMember.basicInfo'.tr,
                           fontSize: 16,
                           fontWeight: AppFonts.semiBold,
                         ),
                         SizedBox(height: screenH * 0.02),
-
-                        /// Profile Image Section
                         Center(
                           child: Stack(
                             children: [
@@ -96,105 +94,97 @@ class AddChildScreen extends StatelessWidget {
                                 right: 0,
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
+                                  decoration: BoxDecoration(
+                                    color: colors.surface,
                                     shape: BoxShape.circle,
-                                    boxShadow: [BoxShadow(blurRadius: 2, color: Colors.black26)],
+                                    boxShadow: [
+                                      BoxShadow(blurRadius: 2, color: colors.shadow.withOpacity(0.1))
+                                    ],
                                   ),
-                                  child: const Icon(Icons.add_a_photo_outlined, size: 18),
+                                  child: Icon(Icons.add_a_photo_outlined, size: 18, color: colors.onSurface),
                                 ),
                               ),
                             ],
                           ),
                         ),
-
                         SizedBox(height: screenH * 0.02),
                         CustomInputField(
-                          label: "First Name",
-                          hint: "Add",
+                          label: 'addMember.firstName'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: firstNameController,
                         ),
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "Last Name",
-                          hint: "Add",
+                          label: 'addMember.lastName'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: lastNameController,
                         ),
                         SizedBox(height: screenH * 0.01),
-
-                        AppText("Gender", fontSize: 14, fontWeight: AppFonts.medium),
+                        AppText('addMember.gender'.tr, fontSize: 14, fontWeight: AppFonts.medium),
                         SizedBox(height: screenH * 0.01),
                         ChildGenderSelection(controller: controller),
-
                         SizedBox(height: screenH * 0.02),
                         LivingStatusWidget(livingStatus: controller.isAlive),
-
                         SizedBox(height: screenH * 0.01),
                         GestureDetector(
                           onTap: () => controller.selectDate(context, dobController),
                           child: AbsorbPointer(
                             child: CustomInputField(
-                              label: "Date Of Birth",
-                              hint: "MM/DD/YYYY",
+                              label: 'addMember.dateOfBirth'.tr,
+                              hint: 'addMember.dateFormatHint'.tr,
                               labelFontWeight: AppFonts.medium,
                               controller: dobController,
-                              suffixIcon: const Icon(Icons.calendar_month, color: AppColors.orangeColor),
+                              suffixIcon: Icon(Icons.calendar_month, color: colors.primary),
                             ),
                           ),
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "Place Of Birth",
-                          hint: "Add location",
+                          label: 'addMember.placeOfBirth'.tr,
+                          hint: 'addMember.addLocation'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: pobController,
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         GestureDetector(
                           onTap: () => controller.selectDate(context, anniversaryController),
                           child: AbsorbPointer(
                             child: CustomInputField(
-                              label: "Anniversary Date",
-                              hint: "MM/DD/YYYY",
+                              label: 'addMember.anniversaryDate'.tr,
+                              hint: 'addMember.dateFormatHint'.tr,
                               labelFontWeight: AppFonts.medium,
                               controller: anniversaryController,
-                              suffixIcon: const Icon(Icons.calendar_month, color: AppColors.orangeColor),
+                              suffixIcon: Icon(Icons.calendar_month, color: colors.primary),
                             ),
                           ),
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "Current Location",
-                          hint: "Add",
+                          label: 'addMember.currentLocation'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: locationController,
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "School & Collage",
-                          hint: "Add",
+                          label: 'addMember.schoolAndCollege'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: schoolController,
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "Qualification",
-                          hint: "Add",
+                          label: 'addMember.qualification'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: qualificationController,
                         ),
-
                         SizedBox(height: screenH * 0.01),
                         CustomInputField(
-                          label: "Study Location",
-                          hint: "Add",
+                          label: 'addMember.studyLocation'.tr,
+                          hint: 'common.add'.tr,
                           labelFontWeight: AppFonts.medium,
                           controller: studyLocationController,
                         ),
@@ -206,16 +196,14 @@ class AddChildScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // BOTTOM BUTTON
           Padding(
             padding: EdgeInsets.all(screenW * 0.05),
             child: CustomButton(
-              text: "Save & Add",
+              text: 'common.saveAndAdd'.tr,
               onPressed: () {
-                Get.to(AddFamilyMemberScreen());
+                Get.to(() => const AddFamilyMemberScreen());
               },
-              backgroundColor: AppColors.orangeColor,
+              backgroundColor: colors.primary,
             ),
           ),
         ],

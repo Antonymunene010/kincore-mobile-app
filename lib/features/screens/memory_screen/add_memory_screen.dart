@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_fonts.dart';
-import '../../../core/utils/app_text.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/custom_icon_button.dart';
 import 'controller/add_memory_controller.dart';
@@ -18,20 +17,23 @@ class AddMemoryScreen extends StatelessWidget {
     final controller = Get.put(AddMemoryController());
     final double screenW = Get.width;
     final double screenH = Get.height;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: colors.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: colors.onSurface, size: 20),
           onPressed: () => Get.back(),
         ),
         title: AppText(
-          "Add Memory",
+          'memory.addTitle'.tr,
           fontSize: 20,
           fontWeight: AppFonts.semiBold,
+          color: colors.onSurface,
         ),
         actions: [
           CustomIconButton(iconName: 'bell.svg', onTap: () {}),
@@ -39,83 +41,78 @@ class AddMemoryScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenW * 0.05),
+        padding: EdgeInsets.symmetric(horizontal: screenW * 0.05, vertical: screenH * 0.02),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-
-            // 1. Tab Switcher (Class reused)
             Obx(
-              () => MemoryTabSwitcher(
-                tabs: const ["Photos", "Videos"],
+                  () => MemoryTabSwitcher(
+                tabs: ['memory.tabPhotos'.tr, 'memory.tabVideos'.tr],
                 selectedTab: controller.selectedTab.value,
-                onTabChanged: (tab) => controller.changeTab(tab),
+                onTabChanged: controller.changeTab,
               ),
             ),
-
-            const SizedBox(height: 30),
-            AppText("Add Memory", fontSize: 16, fontWeight: AppFonts.semiBold),
-            const SizedBox(height: 15),
-
-            // 2. Dotted Upload Box
+            SizedBox(height: screenH * 0.03),
+            AppText(
+              'memory.addTitle'.tr,
+              fontSize: 16,
+              fontWeight: AppFonts.semiBold,
+              color: colors.onSurface,
+            ),
+            SizedBox(height: screenH * 0.015),
             DottedContainer(
-              color: AppColors.orangeColor.withOpacity(0.5),
+              color: colors.primary.withOpacity(0.5),
               borderRadius: 15,
               child: Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(vertical: screenH * 0.04),
                 decoration: BoxDecoration(
-                  color: AppColors.orangeColor.withOpacity(0.05),
+                  color: colors.primary.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
                   children: [
                     SvgPicture.asset('assets/icons/add_memory.svg'),
-                    const SizedBox(height: 15),
-                    Obx(
-                      () => AppText(
-                        "Add Memory ${controller.selectedTab.value}",
-                        fontSize: 20,
-                        fontWeight: AppFonts.medium,
-                      ),
-                    ),
+                    SizedBox(height: screenH * 0.015),
+                    Obx(() => AppText(
+                      controller.selectedTab.value == 'memory.tabPhotos'.tr
+                          ? 'memory.addMemoryPhotos'.tr
+                          : 'memory.addMemoryVideos'.tr,
+                      fontSize: 20,
+                      fontWeight: AppFonts.medium,
+                      color: colors.onSurface,
+                    )),
                     AppText(
-                      "Upload PNG, JPG File Support",
+                      'memory.uploadSupport'.tr,
                       fontSize: 14,
                       fontWeight: AppFonts.regular,
+                      color: colors.onSurfaceVariant,
                     ),
-                    const SizedBox(height: 20),
-
-                    // Upload Button
+                    SizedBox(height: screenH * 0.02),
                     SizedBox(
                       width: 150,
                       height: 46,
                       child: CustomButton(
-                        text: "Upload",
-                        onPressed: () => controller.pickFiles(),
-                        backgroundColor: AppColors.orangeColor.withOpacity(0.15),
-                        foregroundColor: AppColors.orangeColor,
+                        text: 'common.upload'.tr,
+                        onPressed: controller.pickFiles,
+                        backgroundColor: colors.primary.withOpacity(0.15),
+                        foregroundColor: colors.primary,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-
-            const SizedBox(height: 30),
+            SizedBox(height: screenH * 0.03),
+            Obx(() => AppText(
+              controller.selectedTab.value,
+              fontSize: 16,
+              fontWeight: AppFonts.semiBold,
+              color: colors.onSurface,
+            )),
+            SizedBox(height: screenH * 0.015),
             Obx(
-              () => AppText(
-                controller.selectedTab.value,
-                fontSize: 16,
-                fontWeight: AppFonts.semiBold,
-              ),
-            ),
-            const SizedBox(height: 15),
-
-            // 3. Selected Files Preview Grid
-            Obx(
-              () => GridView.builder(
+                  () => GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -144,15 +141,11 @@ class AddMemoryScreen extends StatelessWidget {
                           onTap: () => controller.removeFile(index),
                           child: Container(
                             padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
+                            decoration: BoxDecoration(
+                              color: colors.onSurface.withOpacity(0.9),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
-                              Icons.close,
-                              size: 14,
-                              color: Colors.white,
-                            ),
+                            child: Icon(Icons.close, size: 14, color: colors.surface),
                           ),
                         ),
                       ),
@@ -161,26 +154,24 @@ class AddMemoryScreen extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: 100),
+            SizedBox(height: screenH * 0.1),
           ],
         ),
       ),
-
-      // 4. Main Save Button (Using your CustomButton)
       bottomSheet: Container(
         padding: EdgeInsets.only(
           left: screenW * 0.05,
           right: screenW * 0.05,
-          bottom: screenH * 0.03, // Thoda niche se space
+          bottom: screenH * 0.03,
           top: 10,
         ),
-        color: Colors.white,
+        color: colors.background,
         child: Obx(
-          () => CustomButton(
-            text: controller.selectedTab.value == "Photos"
-                ? "Save Photos"
-                : "Save Memory",
-            onPressed: () => controller.saveMemory(),
+              () => CustomButton(
+            text: controller.selectedTab.value == 'memory.tabPhotos'.tr ? 'common.savePhotos'.tr : 'common.saveMemory'.tr,
+            onPressed: controller.saveMemory,
+            backgroundColor: colors.primary,
+            foregroundColor: colors.onPrimary,
           ),
         ),
       ),

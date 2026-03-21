@@ -22,12 +22,12 @@ class LivingStatusWidget extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Living Status",
+               Text(
+                'addMember.livingStatus'.tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               Text(
-                "Is the Person Still Alive?",
+                'addMember.isAlive'.tr,
                 style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
               ),
             ],

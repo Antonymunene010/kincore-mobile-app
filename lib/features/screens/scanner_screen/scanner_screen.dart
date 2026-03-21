@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_text.dart';
-import '../../../core/utils/app_fonts.dart';
-import '../../../core/widgets/custom_button.dart';
-import '../../../core/widgets/custom_input_field.dart';
-import '../../../core/widgets/app_image.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_fonts.dart';
+import '../../../../core/widgets/app_image.dart';
+import '../../../../core/widgets/app_text.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_input_field.dart';
+import '../switch_space/switch_space_screen.dart';
 import 'controller/scanner_controller.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -16,12 +19,12 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  /// 1. UI Level Controller define kiya
   final inviteLinkController = TextEditingController();
+  // Dummy link for user, aap isse controller se replace kar sakte ho
+  final String myUniqueLink = "https://kincore.app/join/xyz-1234";
 
   @override
   void dispose() {
-    /// 2. Manual Dispose
     inviteLinkController.dispose();
     super.dispose();
   }
@@ -29,97 +32,161 @@ class _ScannerScreenState extends State<ScannerScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ScannerController());
-
     final double screenWidth = Get.width;
-    // final double screenHeight = Get.height;
+
+    // Theme Management setup
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: colors.surface,
+      appBar: AppBar(
+        backgroundColor: colors.surface,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: colors.onSurface, size: 20),
+          onPressed: () => Get.back(),
+        ),
+        title: AppText(
+          'scanner.title'.tr,
+          fontSize: 20,
+          fontWeight: AppFonts.semiBold,
+          color: colors.onSurface,
+        ),
+        centerTitle: true,
+      ),
       body: SafeArea(
-        // Status bar ke niche se start karne ke liye
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
           child: Column(
             children: [
-              const SizedBox(height: 30),
-
-              Align(
-                alignment: Alignment.centerLeft,
-                child: AppText(
-                  "Kincore",
-                  fontSize: 25,
-                  fontWeight: AppFonts.bold,
-                  gradient: LinearGradient(
-                    colors: [AppColors.primaryColor, AppColors.orangeColor],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               /// Scanner Placeholder
-              _buildScannerPlaceholder(screenWidth),
+              _buildScannerPlaceholder(screenWidth, colors),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
               AppText(
-                "Connect With Loved Ones",
+                'scanner.connect'.tr,
                 fontSize: 20,
                 fontWeight: AppFonts.bold,
+                color: colors.onSurface,
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
 
               AppText(
-                "Enter An Invite Link OR code To Join\nYour Family's Space.",
+                'scanner.instruction'.tr,
                 fontSize: 14,
                 textAlign: TextAlign.center,
-                color: AppColors.blackColor.withOpacity(0.7),
+                color: colors.onSurfaceVariant,
                 fontWeight: AppFonts.regular,
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 25),
 
-              /// Custom Input Field with UI Controller
-              CustomInputField(
-                label: "Invite Link",
-                hint: "https://family.app/join/....",
-                controller: inviteLinkController, // UI Controller
-                prefixIcon: const Icon(Icons.link, color: Colors.black, size: 22),
+              /// Custom Input Field for joining
+              // CustomInputField(
+              //   label: 'scanner.inviteLinkLabel'.tr,
+              //   hint: 'scanner.inviteLinkHint'.tr,
+              //   controller: inviteLinkController,
+              //   prefixIcon: Icon(Icons.link, color: colors.onSurfaceVariant, size: 22),
+              // ),
+              //
+              // const SizedBox(height: 15),
+              //
+              // CustomButton(
+              //   text: 'scanner.joinBtn'.tr,
+              //   onPressed: () {
+              //     Get.to(() => const SwitchSpaceScreen());
+              //   },
+              //   backgroundColor: AppColors.orangeColor,
+              // ),
+              //
+              // const SizedBox(height: 25),
+
+              /// --- MY LINK SECTION ---
+              Align(
+                alignment: Alignment.centerLeft,
+                child: AppText(
+                  'scanner.myLink'.tr,
+                  fontSize: 14,
+                  fontWeight: AppFonts.semiBold,
+                  color: colors.onSurface,
+                ),
               ),
+              const SizedBox(height: 8),
 
-              const SizedBox(height: 20),
-
-              CustomButton(
-                text: "Join Space",
-                onPressed: () => controller.joinSpace(
-                  inviteLink: inviteLinkController.text,
+              // Copyable Link Container
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: colors.onInverseSurface.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: colors.outlineVariant.withOpacity(0.5)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: AppText(
+                        myUniqueLink, // Ye link API se aayega isliye ispe .tr nahi lagaya
+                        color: colors.onSurfaceVariant,
+                        fontSize: 14,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        // Clipboard me link copy karne ka logic
+                        Clipboard.setData(ClipboardData(text: myUniqueLink));
+                        Get.snackbar(
+                          'scanner.copiedTitle'.tr,
+                          'scanner.copiedMsg'.tr,
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: AppColors.orangeColor.withOpacity(0.1),
+                          colorText: AppColors.orangeColor,
+                          duration: const Duration(seconds: 2),
+                        );
+                      },
+                      child: const Icon(Icons.copy, color: AppColors.orangeColor, size: 22),
+                    )
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
 
               /// OR Divider
               Row(
                 children: [
-                  const Expanded(child: Divider(thickness: 1)),
+                  Expanded(child: Divider(thickness: 1, color: colors.outlineVariant.withOpacity(0.5))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: AppText("OR", fontWeight: AppFonts.bold, fontSize: 14, color: Colors.grey),
+                    child: AppText('scanner.or'.tr, fontWeight: AppFonts.bold, fontSize: 14, color: colors.onSurfaceVariant),
                   ),
-                  const Expanded(child: Divider(thickness: 1)),
+                  Expanded(child: Divider(thickness: 1, color: colors.outlineVariant.withOpacity(0.5))),
                 ],
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
 
               /// Outline Button (Share QR)
               CustomButton(
-                text: "Share QR Code",
+                text: 'scanner.shareBtn'.tr,
                 icon: Icons.share,
-                onPressed: () => controller.shareQRCode(),
-                backgroundColor: Colors.white,
+                onPressed: () {
+                  // Share Plus package will open native bottom sheet for WhatsApp, Messages, etc.
+                  Share.share(
+                    'scanner.shareText'.trParams({'link': myUniqueLink}),
+                    subject: 'scanner.shareSubject'.tr,
+                  );
+                },
+                backgroundColor: Colors.transparent,
+                textColor: AppColors.orangeColor,
                 foregroundColor: AppColors.orangeColor,
                 borderColor: AppColors.orangeColor,
               ),
@@ -127,11 +194,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
               const SizedBox(height: 25),
 
               AppText(
-                "Ask a family Admin to Show you their QR\nCode From Their Profile Settings.",
+                'scanner.askAdmin'.tr,
                 fontSize: 13,
                 fontWeight: AppFonts.regular,
                 textAlign: TextAlign.center,
-                color: Colors.grey.shade600,
+                color: colors.onSurfaceVariant,
               ),
 
               const SizedBox(height: 40),
@@ -142,16 +209,33 @@ class _ScannerScreenState extends State<ScannerScreen> {
     );
   }
 
-  Widget _buildScannerPlaceholder(double screenWidth) {
+  // Widget _buildScannerPlaceholder(double screenWidth, ColorScheme colors) {
+  //   return Center(
+  //     child: Container(
+  //       padding: const EdgeInsets.all(25),
+  //       decoration: BoxDecoration(
+  //         color: colors.onInverseSurface.withOpacity(0.05), // Theme based background
+  //         borderRadius: BorderRadius.circular(25),
+  //         border: Border.all(color: colors.outlineVariant.withOpacity(0.5)),
+  //       ),
+  //       child: const AppImage(
+  //         imageName: "scanner.png",
+  //         fit: BoxFit.contain,
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildScannerPlaceholder(double screenWidth, ColorScheme colors) {
     return Center(
       child: Container(
-        width: screenWidth * 0.65,
-        height: screenWidth * 0.65,
+        width: screenWidth * 0.7,
+        height: screenWidth * 0.7,
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.05),
+          color: colors.onInverseSurface.withOpacity(0.05),
           borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          border: Border.all(color: AppColors.orangeColor.withOpacity(0.5), width: 2),
         ),
         child: const AppImage(
           imageName: "scanner.png",

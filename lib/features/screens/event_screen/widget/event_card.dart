@@ -1,16 +1,222 @@
+// import 'package:flutter/material.dart';
+// import '../../../../core/utils/app_fonts.dart';
+// import '../../../../core/widgets/app_text.dart';
+// import '../../../../core/widgets/custom_network_image.dart';
+//
+// class EventCard extends StatelessWidget {
+//   final String title;
+//   final String imageUrl;
+//   final String date;
+//   final String location;
+//   final String status;
+//   final List<String> memberAvatars;
+//   final VoidCallback onTap;
+//
+//   const EventCard({
+//     super.key,
+//     required this.title,
+//     required this.imageUrl,
+//     required this.date,
+//     required this.location,
+//     required this.status,
+//     required this.memberAvatars,
+//     required this.onTap,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final theme = Theme.of(context);
+//     final colors = theme.colorScheme;
+//
+//     // Button colors based on status and theme
+//     Color buttonBg = colors.primary;
+//     Color buttonText = colors.onPrimary;
+//
+//     if (status == "Attended") {
+//       buttonBg = const Color(0xFFC05441);
+//     } else if (status == "Not Attended") {
+//       buttonBg = const Color(0xFFFEB139);
+//     }
+//
+//     return Padding(
+//       padding: const EdgeInsets.only(bottom: 5),
+//       child: InkWell(
+//         onTap: onTap, // Ab pure card pe tap kaam karega
+//         borderRadius: BorderRadius.circular(20),
+//         child: Container(
+//           decoration: BoxDecoration(
+//             color: colors.surface,
+//             borderRadius: BorderRadius.circular(20),
+//             border: Border.all(color: colors.outlineVariant.withOpacity(0.5)),
+//             boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.04),
+//                 blurRadius: 10,
+//                 offset: const Offset(0, 4),
+//               ),
+//             ],
+//           ),
+//           child: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               /// ---------- IMAGE SECTION ----------
+//               Padding(
+//                 padding: const EdgeInsets.all(8.0),
+//                 child: ClipRRect(
+//                   borderRadius: BorderRadius.circular(16),
+//                   child: AspectRatio(
+//                     aspectRatio: 16 / 8,
+//                     child: CustomNetworkImage(
+//                       imageUrl: imageUrl,
+//                       width: double.infinity,
+//                       fit: BoxFit.cover,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//
+//               /// ---------- CONTENT SECTION ----------
+//               Padding(
+//                 padding: const EdgeInsets.fromLTRB(14, 2, 14, 14),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     AppText(
+//                       title,
+//                       fontSize: 16,
+//                       fontWeight: AppFonts.bold,
+//                       maxLines: 1,
+//                       overflow: TextOverflow.ellipsis,
+//                       color: colors.onSurface,
+//                     ),
+//                     const SizedBox(height: 6),
+//
+//                     /// Date + Location Row
+//                     Row(
+//                       children: [
+//                         Icon(Icons.calendar_today_outlined, size: 13, color: colors.primary),
+//                         const SizedBox(width: 4),
+//                         AppText(date, fontSize: 12, color: colors.onSurfaceVariant),
+//                         const SizedBox(width: 12),
+//                         Icon(Icons.location_on_outlined, size: 15, color: colors.primary),
+//                         const SizedBox(width: 2),
+//                         Expanded(
+//                           child: AppText(
+//                             location,
+//                             fontSize: 12,
+//                             color: colors.onSurfaceVariant,
+//                             maxLines: 1,
+//                             overflow: TextOverflow.ellipsis,
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//
+//                     const SizedBox(height: 12),
+//
+//                     /// Avatars + Status Button
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         _MemberAvatars(memberAvatars: memberAvatars),
+//
+//                         // Button logic
+//                         SizedBox(
+//                           height: 32,
+//                           child: ElevatedButton(
+//                             onPressed: onTap, // Same as card tap
+//                             style: ElevatedButton.styleFrom(
+//                               backgroundColor: buttonBg,
+//                               padding: const EdgeInsets.symmetric(horizontal: 16),
+//                               shape: RoundedRectangleBorder(
+//                                 borderRadius: BorderRadius.circular(18),
+//                               ),
+//                               elevation: 0,
+//                             ),
+//                             child: AppText(
+//                               status,
+//                               fontSize: 12,
+//                               fontWeight: AppFonts.medium,
+//                               color: buttonText,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// /// ---------- MEMBER AVATARS ----------
+// class _MemberAvatars extends StatelessWidget {
+//   final List<String> memberAvatars;
+//   const _MemberAvatars({required this.memberAvatars});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final colors = Theme.of(context).colorScheme;
+//     final int visibleCount = memberAvatars.length > 3 ? 4 : memberAvatars.length;
+//
+//     return SizedBox(
+//       height: 30,
+//       width: 85,
+//       child: Stack(
+//         children: List.generate(visibleCount, (index) {
+//           if (index == 3) {
+//             return Positioned(
+//               left: index * 18.0,
+//               child: CircleAvatar(
+//                 radius: 14,
+//                 backgroundColor: colors.surfaceVariant,
+//                 child: AppText(
+//                   "+${memberAvatars.length - 3}",
+//                   fontSize: 9,
+//                   fontWeight: AppFonts.bold,
+//                   color: colors.onSurfaceVariant,
+//                 ),
+//               ),
+//             );
+//           }
+//
+//           return Positioned(
+//             left: index * 18.0,
+//             child: Container(
+//               decoration: BoxDecoration(
+//                 shape: BoxShape.circle,
+//                 border: Border.all(color: colors.surface, width: 2),
+//               ),
+//               child: CustomNetworkImage(
+//                 imageUrl: memberAvatars[index],
+//                 height: 25,
+//                 width: 25,
+//                 borderRadius: 15,
+//               ),
+//             ),
+//           );
+//         }),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
-import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_fonts.dart';
-import '../../../../core/utils/app_text.dart';
+import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/custom_network_image.dart';
-import 'package:get/get.dart';
 
 class EventCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final String date;
   final String location;
-  final String status;
+  final String status; // Values: "RSVP", "Going", "Attended", "Not Attended"
   final List<String> memberAvatars;
   final VoidCallback onTap;
 
@@ -27,94 +233,164 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double screenW = Get.width;
-    final double screenH = Get.height;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
-    Color buttonColor = AppColors.orangeColor;
-    if (status == "Attended") buttonColor = const Color(0xFFC05441);
-    if (status == "Not Attended") buttonColor = const Color(0xFFFEB139);
+    // --- COLOR LOGIC ---
+    Color buttonBg = colors.primary; // Default (RSVP)
+    Color buttonText = colors.onPrimary;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: screenH * 0.02), // Responsive
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), // Fixed
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomNetworkImage(
-              imageUrl: imageUrl,
-              height: screenH * 0.22, // Responsive
-              width: double.infinity,
-              borderRadius: 16, // Fixed
-            ),
-            Padding(
-              padding: EdgeInsets.all(screenW * 0.03), // Responsive
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(title, fontSize: 18, fontWeight: AppFonts.semiBold, maxLines: 1),
-                  SizedBox(height: screenH * 0.01),
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today_outlined, size: 16, color: AppColors.orangeColor),
-                      const SizedBox(width: 4),
-                      AppText(date, fontSize: 12, color: Colors.grey.shade600),
-                      SizedBox(width: screenW * 0.03),
-                      const Icon(Icons.location_on_outlined, size: 16, color: AppColors.orangeColor),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: AppText(location, fontSize: 12, color: Colors.grey.shade600, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      ),
-                    ],
+    if (status == "Going") {
+      buttonBg = const Color(0xFF2E7D32); // Green
+    } else if (status == "Attended") {
+      buttonBg = const Color(0xFFC05441); // Red
+    } else if (status == "Not Attended") {
+      buttonBg = const Color(0xFFFEB139); // Yellow
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: colors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: colors.outlineVariant.withOpacity(0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: AspectRatio(
+                    aspectRatio: 16 / 8,
+                    child: CustomNetworkImage(
+                      imageUrl: imageUrl,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  SizedBox(height: screenH * 0.015),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: screenW * 0.25,
-                        height: 32,
-                        child: Stack(
-                          children: List.generate(
-                            memberAvatars.length > 3 ? 4 : memberAvatars.length,
-                                (index) {
-                              if (index == 3) {
-                                return Positioned(
-                                  left: index * 22,
-                                  child: CircleAvatar(radius: 16, backgroundColor: Colors.grey.shade300, child: AppText("+${memberAvatars.length - 3}", fontSize: 10)),
-                                );
-                              }
-                              return Positioned(
-                                left: index * 22,
-                                child: Container(
-                                  decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                                  child: CustomNetworkImage(imageUrl: memberAvatars[index], height: 28, width: 28, borderRadius: 50),
-                                ),
-                              );
-                            },
+                ),
+              ),
+
+              // Content
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 2, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(
+                      title,
+                      fontSize: 16,
+                      fontWeight: AppFonts.bold,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      color: colors.onSurface,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.calendar_today_outlined, size: 13, color: colors.primary),
+                        const SizedBox(width: 4),
+                        AppText(date, fontSize: 12, color: colors.onSurfaceVariant),
+                        const SizedBox(width: 12),
+                        Icon(Icons.location_on_outlined, size: 15, color: colors.primary),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: AppText(
+                            location,
+                            fontSize: 12,
+                            color: colors.onSurfaceVariant,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                      ElevatedButton(
-                        onPressed: onTap,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                          padding: EdgeInsets.symmetric(horizontal: screenW * 0.05),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _MemberAvatars(memberAvatars: memberAvatars),
+                        SizedBox(
+                          height: 32,
+                          child: ElevatedButton(
+                            onPressed: onTap,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: buttonBg,
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: AppText(
+                              status, // "RSVP", "Going", etc.
+                              fontSize: 12,
+                              fontWeight: AppFonts.medium,
+                              color: buttonText,
+                            ),
+                          ),
                         ),
-                        child: AppText(status, color: Colors.white, fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _MemberAvatars extends StatelessWidget {
+  final List<String> memberAvatars;
+  const _MemberAvatars({required this.memberAvatars});
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    final int visibleCount = memberAvatars.length > 3 ? 4 : memberAvatars.length;
+    return SizedBox(
+      height: 30,
+      width: 85,
+      child: Stack(
+        children: List.generate(visibleCount, (index) {
+          if (index == 3) {
+            return Positioned(
+              left: index * 18.0,
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: colors.surfaceVariant,
+                child: AppText("+${memberAvatars.length - 3}", fontSize: 9, fontWeight: AppFonts.bold, color: colors.onSurfaceVariant),
+              ),
+            );
+          }
+          return Positioned(
+            left: index * 18.0,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: colors.surface, width: 2),
+              ),
+              child: CustomNetworkImage(imageUrl: memberAvatars[index], height: 25, width: 25, borderRadius: 15),
+            ),
+          );
+        }),
       ),
     );
   }

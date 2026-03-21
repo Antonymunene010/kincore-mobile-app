@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kincore_app/core/utils/app_colors.dart';
 import '../../../../core/utils/app_fonts.dart';
-import '../../../../core/utils/app_text.dart';
+import '../../../../core/widgets/app_text.dart';
 import '../controller/redeem_kcc_coin_controller.dart';
 
 class RedeemCoinBalanceCard extends StatelessWidget {
@@ -18,10 +17,12 @@ class RedeemCoinBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<RedeemController>();
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: screenH * 0.04), // Thoda bada padding image jaisa
+      padding: EdgeInsets.symmetric(vertical: screenH * 0.04),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
@@ -38,8 +39,8 @@ class RedeemCoinBalanceCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AppText(
-            "TOTAL BALANCE",
-            color: AppColors.whiteColor,
+            'redeem.totalBalance'.tr,
+            color: Colors.white,
             fontSize: 16,
             fontWeight: AppFonts.semiBold,
           ),
@@ -51,14 +52,14 @@ class RedeemCoinBalanceCard extends StatelessWidget {
             children: [
               Obx(() => AppText(
                 controller.coinBalance.value,
-                color: AppColors.whiteColor,
-                fontSize: 25, // Bada font size
+                color: Colors.white,
+                fontSize: 25,
                 fontWeight: AppFonts.semiBold,
               )),
               const SizedBox(width: 8),
               AppText(
-                "KCC",
-                color: AppColors.whiteColor,
+                'KCC',
+                color: Colors.white,
                 fontSize: 20,
                 fontWeight: AppFonts.semiBold,
               ),

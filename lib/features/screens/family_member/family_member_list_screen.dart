@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_fonts.dart';
-import '../../../core/utils/app_text.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/custom_icon_button.dart';
 import '../../../core/widgets/custom_network_image.dart';
 import '../memory_screen/widget/memory_tab.dart';
@@ -13,130 +12,91 @@ class FamilyMemberListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Find existing controller
-    final controller = Get.find<FamilyController>();
+    final controller = Get.put(FamilyController());
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     final double screenW = Get.width;
     final double screenH = Get.height;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
-        centerTitle: false,
-        automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
+          icon: Icon(Icons.arrow_back_ios, color: colorScheme.onSurface, size: 20),
           onPressed: () => Get.back(),
         ),
-        title: AppText("All Family Member", fontSize: 20, fontWeight: AppFonts.semiBold),
-        actions: [
-          CustomIconButton(iconName: 'bell.svg', onTap: () {}),
-          SizedBox(width: screenW * 0.05),
-        ],
+        title: AppText('memberList.title'.tr, fontSize: 20, fontWeight: AppFonts.semiBold, color: colorScheme.onSurface),
+        // actions: [
+        //   CustomIconButton(iconName: 'bell.svg', onTap: () {}),
+        //   SizedBox(width: screenW * 0.05),
+        // ],
       ),
       body: Column(
         children: [
-          // --- TAB SWITCHER ADDED HERE ---
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenW * 0.05,
-              vertical: screenH * 0.015,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: screenW * 0.05, vertical: screenH * 0.015),
             child: Obx(
                   () => MemoryTabSwitcher(
-                tabs: const ["Families", "People"],
+                tabs: ['memberList.tabFamilies'.tr, 'memberList.tabPeople'.tr],
                 selectedTab: controller.selectedTab.value,
-                onTabChanged: (tab) => controller.changeTab(tab),
+                onTabChanged: controller.changeTab,
               ),
             ),
           ),
-
-          // --- DYNAMIC LIST SECTION ---
           Expanded(
             child: Obx(() {
-              // Current tab ke hisab se list select karna
-              final currentList = controller.selectedTab.value == "Families"
-                  ? controller.familyMembers
-                  : controller.peopleMembers;
+              final currentList = controller.selectedTab.value == 'memberList.tabFamilies'.tr ? controller.familyMembers : controller.peopleMembers;
 
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(child: CircularProgressIndicator(color: colorScheme.primary));
               }
 
               if (currentList.isEmpty) {
-                return const Center(child: AppText("No members found", fontSize: 16));
+                return Center(child: AppText('memberList.noMembers'.tr, fontSize: 16, color: colorScheme.onSurface));
               }
 
               return ListView.builder(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screenW * 0.05,
-                  vertical: screenH * 0.01,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: screenW * 0.05, vertical: screenH * 0.01),
                 itemCount: currentList.length,
                 itemBuilder: (context, index) {
                   final member = currentList[index];
-
                   return Container(
                     margin: EdgeInsets.only(bottom: screenH * 0.015),
                     padding: EdgeInsets.all(screenW * 0.03),
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor,
-                      border: Border.all(color: Colors.grey.shade200),
+                      color: colorScheme.surface,
+                      border: Border.all(color: colorScheme.outlineVariant),
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: Row(
                       children: [
-                        CustomNetworkImage(
-                          imageUrl: member.image,
-                          height: screenW * 0.15,
-                          width: screenW * 0.15,
-                          borderRadius: 50,
-                        ),
+                        CustomNetworkImage(imageUrl: member.image, height: screenW * 0.15, width: screenW * 0.15, borderRadius: 50),
                         SizedBox(width: screenW * 0.04),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppText(
-                                member.name,
-                                fontSize: 16,
-                                fontWeight: AppFonts.bold,
-                              ),
+                              AppText(member.name, fontSize: 16, fontWeight: AppFonts.bold, color: colorScheme.onSurface),
                               SizedBox(height: screenH * 0.005),
                               Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 2,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.orangeColor.withOpacity(0.5),
-                                      ),
+                                      border: Border.all(color: colorScheme.primary.withOpacity(0.5)),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
-                                    child: AppText(
-                                      member.relation,
-                                      fontSize: 10,
-                                      color: Colors.grey.shade700,
-                                      fontWeight: AppFonts.medium,
-                                    ),
+                                    child: AppText(member.relation, fontSize: 10, color: colorScheme.onSurface.withOpacity(0.7), fontWeight: AppFonts.medium),
                                   ),
                                   const Padding(
                                     padding: EdgeInsets.symmetric(horizontal: 8),
-                                    child: CircleAvatar(
-                                      radius: 2,
-                                      backgroundColor: Colors.grey,
-                                    ),
+                                    child: CircleAvatar(radius: 2, backgroundColor: Colors.grey),
                                   ),
-                                  AppText(
-                                    member.years,
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
+                                  AppText(member.years, fontSize: 14, color: colorScheme.onSurface.withOpacity(0.6)),
                                 ],
                               ),
                             ],

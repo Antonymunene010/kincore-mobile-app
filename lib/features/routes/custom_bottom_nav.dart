@@ -9,88 +9,83 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     final controller = Get.find<DashboardController>();
+//     final theme = Theme.of(context);
+//     final colors = theme.colorScheme;
 //
 //     return Obx(() {
-//       return Stack(
-//         clipBehavior: Clip.none, // Bahar ki line dikhane ke liye zaroori hai
-//         alignment: Alignment.topCenter,
-//         children: [
-//           // 1. Main Background Container (Peach Color)
-//           Container(
-//             height: 65,
-//             decoration: BoxDecoration(
-//               color: const Color(0xFFFFD8C7),
-//               borderRadius: BorderRadius.circular(35),
-//             ),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceAround,
-//               children: List.generate(5, (index) => _buildNavItem(index, controller)),
+//       return Container(
+//         height: 60,
+//         decoration: BoxDecoration(
+//           color: colors.surface,
+//           border: Border(
+//             top: BorderSide(
+//               color: theme.dividerColor,
+//               width: 1,
 //             ),
 //           ),
+//         ),
+//         child: Row(
+//           children: List.generate(5, (index) {
+//             final bool isSelected = controller.selectedIndex.value == index;
+//             const activeColor = Color(0xFFFF6130);
 //
-//           // 2. Floating Orange Line (Container ke bahar upar ki taraf)
-//           Positioned(
-//             top: -2, // Image ke hisab se exact upar set kiya
-//             left: 0,
-//             right: 0,
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceAround,
-//               children: List.generate(5, (index) {
-//                 bool isSelected = controller.selectedIndex.value == index;
-//                 return AnimatedContainer(
-//                   duration: const Duration(milliseconds: 250),
-//                   width: isSelected ? 50 : 0, // Line ki length icon ke upar
-//                   height: 3, // Line ki thickness
-//                   decoration: BoxDecoration(
-//                     color: const Color(0xFFFF6130),
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                 );
-//               }),
-//             ),
-//           ),
-//         ],
-//       );
-//     });
-//   }
+//             final icons = ['home.svg', 'feed.svg', 'tree.svg', 'shopping.svg', 'user.svg'];
+//             final labels = ['nav.home', 'nav.feed', 'nav.tree', 'nav.mall', 'nav.profile'];
 //
-//   Widget _buildNavItem(int index, DashboardController controller) {
-//     bool isSelected = controller.selectedIndex.value == index;
-//     List<String> icons = ['tree.svg', 'feed.svg', 'event.svg', 'shopping.svg', 'user.svg'];
-//     List<String> labels = ['Tree', 'Feed', 'Events', 'Shop', 'Profile'];
-//
-//     return Expanded(
-//       child: GestureDetector(
-//         onTap: () => controller.changeIndex(index),
-//         behavior: HitTestBehavior.opaque,
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const SizedBox(height: 5), // Top line se thodi gap
-//             SvgPicture.asset(
-//               'assets/icons/${icons[index]}',
-//               height: 22,
-//               colorFilter: ColorFilter.mode(
-//                 isSelected ? const Color(0xFFFF6130) : Colors.black54,
-//                 BlendMode.srcIn,
-//               ),
-//             ),
-//             if (isSelected)
-//               Padding(
-//                 padding: const EdgeInsets.only(top: 2),
-//                 child: Text(
-//                   labels[index],
-//                   style: const TextStyle(
-//                     fontSize: 10,
-//                     fontWeight: FontWeight.bold,
-//                     color: Color(0xFFFF6130),
-//                   ),
+//             return Expanded(
+//               child: InkWell(
+//                 onTap: () => controller.changeIndex(index),
+//                 splashColor: Colors.transparent,
+//                 highlightColor: Colors.transparent,
+//                 child: Stack(
+//                   alignment: Alignment.center,
+//                   children: [
+//                     if (isSelected)
+//                       Positioned(
+//                         top: 0,
+//                         child: Container(
+//                           width: 45,
+//                           height: 3,
+//                           decoration: const BoxDecoration(
+//                             color: activeColor,
+//                             borderRadius: BorderRadius.only(
+//                               bottomLeft: Radius.circular(4),
+//                               bottomRight: Radius.circular(4),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         const SizedBox(height: 4),
+//                         SvgPicture.asset(
+//                           'assets/icons/${icons[index]}',
+//                           height: 22,
+//                           colorFilter: ColorFilter.mode(
+//                             isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
+//                             BlendMode.srcIn,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 2),
+//                         Text(
+//                           labels[index].tr,
+//                           style: TextStyle(
+//                             fontSize: 10,
+//                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+//                             color: isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
 //                 ),
 //               ),
-//           ],
+//             );
+//           }),
 //         ),
-//       ),
-//     );
+//       );
+//     });
 //   }
 // }
 
@@ -99,29 +94,32 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'contoller/dashboard_controller.dart';
 
+// 📱 MOBILE KE LIYE BOTTOM NAV (Unchanged)
 class CustomBottomNav extends StatelessWidget {
   const CustomBottomNav({super.key});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<DashboardController>();
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Obx(() {
       return Container(
-        height: 60,
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        height: 60, // [FIXED]: Wapas original height 60 kar di
+        decoration: BoxDecoration(
+          color: colors.surface,
           border: Border(
-            top: BorderSide(color: Color(0xFFE8E8E8), width: 1), // Top light divider
+            top: BorderSide(color: theme.dividerColor, width: 1),
           ),
         ),
         child: Row(
           children: List.generate(5, (index) {
             final bool isSelected = controller.selectedIndex.value == index;
-            final Color activeColor = const Color(0xFFFF6130);
+            const activeColor = Color(0xFFFF6130);
 
-            final icons = ['tree.svg', 'feed.svg', 'event.svg', 'shopping.svg', 'user.svg'];
-            final labels = ['Tree', 'Feed', 'Events', 'K-mall', 'Profile'];
+            final icons = ['home.svg', 'feed.svg', 'tree.svg', 'shopping.svg', 'user.svg'];
+            final labels = ['nav.home', 'nav.feed', 'nav.tree', 'nav.mall', 'nav.profile'];
 
             return Expanded(
               child: InkWell(
@@ -131,43 +129,47 @@ class CustomBottomNav extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // --- Selected Orange Indicator (Top Border Touch) ---
+                    // TOP LINE - Apni jagah par fix rahegi
                     if (isSelected)
                       Positioned(
                         top: 0,
                         child: Container(
                           width: 45,
                           height: 3,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: activeColor,
-                            borderRadius: const BorderRadius.only(
+                            borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(4),
                               bottomRight: Radius.circular(4),
                             ),
                           ),
                         ),
                       ),
-
-                    // --- Icon & Label ---
+                    // ICON & TEXT
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center, // Original behavior wapas
                       children: [
                         const SizedBox(height: 4),
                         SvgPicture.asset(
                           'assets/icons/${icons[index]}',
                           height: 22,
                           colorFilter: ColorFilter.mode(
-                            isSelected ? activeColor : Colors.grey,
+                            isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
                             BlendMode.srcIn,
                           ),
                         ),
                         const SizedBox(height: 2),
-                        Text(
-                          labels[index],
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: isSelected ? activeColor : Colors.grey,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0), // Thodi side space
+                          child: Text(
+                            labels[index].tr,
+                            maxLines: 1, // [FIXED]: Text doosri line me nahi jayega
+                            overflow: TextOverflow.ellipsis, // [FIXED]: Lamba hua toh "..." aayega
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
+                            ),
                           ),
                         ),
                       ],
@@ -177,6 +179,139 @@ class CustomBottomNav extends StatelessWidget {
               ),
             );
           }),
+        ),
+      );
+    });
+  }
+}
+
+// 💻 DESKTOP/WEB KE LIYE LATEST EXPANDABLE SIDE NAV
+class CustomSideNav extends StatefulWidget {
+  const CustomSideNav({super.key});
+
+  @override
+  State<CustomSideNav> createState() => _CustomSideNavState();
+}
+
+class _CustomSideNavState extends State<CustomSideNav> {
+  // Sidebar open/close track karne ke liye state
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<DashboardController>();
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
+    return Obx(() {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        width: isExpanded ? 220 : 80, // Expand hone pe 220px, Collapse pe 80px
+        decoration: BoxDecoration(
+          color: colors.surface,
+          border: Border(
+            right: BorderSide(color: theme.dividerColor, width: 1),
+          ),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+
+            // --- HAMBURGER MENU ICON ---
+            InkWell(
+              onTap: () {
+                setState(() {
+                  isExpanded = !isExpanded;
+                });
+              },
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              child: Container(
+                height: 50,
+                alignment: isExpanded ? Alignment.centerLeft : Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: isExpanded ? 24 : 0),
+                child: Icon(Icons.menu_rounded, color: colors.onSurface, size: 28),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // --- MENU ITEMS ---
+            ...List.generate(5, (index) {
+              final bool isSelected = controller.selectedIndex.value == index;
+              const activeColor = Color(0xFFFF6130);
+
+              final icons = ['home.svg', 'feed.svg', 'tree.svg', 'shopping.svg', 'user.svg'];
+              final labels = ['nav.home', 'nav.feed', 'nav.tree', 'nav.mall', 'nav.profile'];
+
+              return InkWell(
+                onTap: () => controller.changeIndex(index),
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Container(
+                  height: 60, // [FIXED] Height fix ki taaki active line badi na ho
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  child: Stack(
+                    children: [
+                      // --- ACTIVE LINE ---
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        left: 0,
+                        top: 15,
+                        bottom: 15,
+                        width: isSelected ? 4 : 0, // Sirf select hone pe dikhegi
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: activeColor,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(6),
+                              bottomRight: Radius.circular(6),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // --- ICON AND TEXT ---
+                      Row(
+                        children: [
+                          // Padding icon ko center ya left align karne ke liye
+                          SizedBox(width: isExpanded ? 24 : 28),
+
+                          SvgPicture.asset(
+                            'assets/icons/${icons[index]}',
+                            height: 24,
+                            width: 24,
+                            colorFilter: ColorFilter.mode(
+                              isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
+                              BlendMode.srcIn,
+                            ),
+                          ),
+
+                          // --- ANIMATED TEXT ---
+                          if (isExpanded) ...[
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                labels[index].tr,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: isSelected ? activeColor : colors.onSurface.withOpacity(0.6),
+                                ),
+                              ),
+                            ),
+                          ]
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ],
         ),
       );
     });

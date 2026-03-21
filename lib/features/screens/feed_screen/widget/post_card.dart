@@ -1,109 +1,10 @@
-// import 'package:flutter/material.dart';
-// import '../controller/feed_controller.dart';
-//
-// class PostCard extends StatelessWidget {
-//   final int index;
-//   final FeedController controller;
-//
-//   const PostCard({super.key, required this.index, required this.controller});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     var post = controller.posts[index];
-//     return Container(
-//       margin: const EdgeInsets.only(bottom: 15),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(20),
-//         border: Border.all(color: Colors.grey.shade200),
-//       ),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           ListTile(
-//             leading: CircleAvatar(backgroundImage: NetworkImage(post.profilePic)),
-//             title: Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-//             subtitle: Text(post.username),
-//             trailing: PopupMenuButton(
-//               icon: const Icon(Icons.more_vert),
-//               itemBuilder: (context) => [
-//                 const PopupMenuItem(value: 'repost', child: Text("Repost")),
-//                 const PopupMenuItem(value: 'archive', child: Text("Archive")),
-//               ],
-//             ),
-//           ),
-//           Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 15),
-//             child: Text(post.content),
-//           ),
-//           if (post.postImage != null) ...[
-//             const SizedBox(height: 10),
-//             Image.network(post.postImage!, width: double.infinity, height: 200, fit: BoxFit.cover),
-//           ],
-//           Padding(
-//             padding: const EdgeInsets.all(10),
-//             child: Row(
-//               children: [
-//                 IconButton(
-//                   icon: Icon(
-//                     post.isLiked ? Icons.favorite : Icons.favorite_border,
-//                     color: post.isLiked ? Colors.red : Colors.grey,
-//                   ),
-//                   onPressed: () => controller.toggleLike(index),
-//                 ),
-//                 Text("${post.likes}"),
-//                 const SizedBox(width: 15),
-//                 IconButton(
-//                   icon: const Icon(Icons.chat_bubble_outline),
-//                   onPressed: () => controller.toggleComments(index),
-//                 ),
-//                 Text("${post.commentsCount}"),
-//                 const Spacer(),
-//                 const Icon(Icons.bookmark_border, color: Colors.grey),
-//               ],
-//             ),
-//           ),
-//           if (post.isCommentVisible)
-//             Container(
-//               padding: const EdgeInsets.all(15),
-//               color: Colors.grey.shade50,
-//               child: Column(
-//                 children: [
-//                   ...post.comments.map((c) => Padding(
-//                     padding: const EdgeInsets.only(bottom: 8),
-//                     child: Row(
-//                       children: [
-//                         const Icon(Icons.subdirectory_arrow_right, size: 16, color: Colors.grey),
-//                         const SizedBox(width: 5),
-//                         Text(c),
-//                       ],
-//                     ),
-//                   )).toList(),
-//                   TextField(
-//                     controller: controller.commentController,
-//                     decoration: InputDecoration(
-//                       hintText: "Write a comment...",
-//                       suffixIcon: IconButton(
-//                         icon: const Icon(Icons.send, color: Color(0xFFFF6130)),
-//                         onPressed: () => controller.addComment(index),
-//                       ),
-//                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/utils/app_fonts.dart';
+import '../../../../core/widgets/app_text.dart';
 import '../../../../core/widgets/custom_network_image.dart';
 import '../controller/feed_controller.dart';
-import '../repost_issu_screen.dart';
+import '../report_issue_screen.dart';
 
 class PostCard extends StatelessWidget {
   final int index;
@@ -113,168 +14,176 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final bool isDark = theme.brightness == Brightness.dark;
+    final bool isWeb = Get.width > 900;
+
     return Obx(() {
-      var post = controller.posts[index];
+      final post = controller.posts[index];
+
       return Container(
         margin: const EdgeInsets.only(bottom: 15),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200),
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(isWeb ? 15 : 12),
+          // --- BORDER TYPE VIEW FOR DARK MODE ---
+          border: Border.all(
+            color: isDark ? colors.outlineVariant.withOpacity(0.5) : colors.outlineVariant.withOpacity(0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// ---------- HEADER ----------
             ListTile(
-              leading: CustomNetworkImage(
-                imageUrl: post.profilePic,
-                height: 40,
-                width: 40,
-                borderRadius: 100,
-              ),
-              title: Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(post.username),
-              // --- UPDATED POPUP MENU DESIGN ---
+              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              leading: CustomNetworkImage(imageUrl: post.profilePic, height: 45, width: 45, borderRadius: 25),
+              title: AppText(post.name, fontSize: 15, fontWeight: AppFonts.bold),
+              subtitle: AppText(post.username, fontSize: 12, color: colors.onSurfaceVariant),
               trailing: PopupMenuButton<String>(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                icon: const Icon(Icons.more_vert, color: Colors.black54),
+                icon: Icon(Icons.more_vert, color: colors.onSurfaceVariant),
                 onSelected: (value) {
-                  if (value == 'report') {
-                    // Report screen par navigate karega
-                    Get.to(() => const ReportIssueScreen());
-                  } else if (value == 'archive') {
-                    print("Post Archived");
-                    // controller.archivePost(index); // Future use ke liye
-                  }
+                  if (value == 'report') Get.to(() => const ReportIssueScreen());
                 },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'archive',
-                    child: Row(
-                      children: const [
-                        Icon(Icons.archive_outlined, size: 20, color: Colors.black87),
-                        SizedBox(width: 10),
-                        Text("Archive"),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'report',
-                    child: Row(
-                      children: const [
-                        Icon(Icons.report_gmailerrorred_outlined, size: 20, color: Colors.redAccent),
-                        SizedBox(width: 10),
-                        Text("Report", style: TextStyle(color: Colors.redAccent)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text(post.content),
-            ),
-
-            if (post.postImage != null) ...[
-              const SizedBox(height: 10),
-              CustomNetworkImage(
-                imageUrl: post.postImage!,
-                width: double.infinity,
-                height: 200,
-                borderRadius: 0,
-                fit: BoxFit.cover,
-              ),
-            ],
-
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      post.isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: post.isLiked ? Colors.red : Colors.grey,
-                    ),
-                    onPressed: () => controller.toggleLike(index),
-                  ),
-                  Text("${post.likes}"),
-                  const SizedBox(width: 15),
-                  IconButton(
-                    icon: const Icon(Icons.chat_bubble_outline),
-                    onPressed: () => controller.toggleComments(index),
-                  ),
-                  Text("${post.commentsCount}"),
-                  const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.bookmark_border, color: Colors.grey),
-                    onPressed: () => print("Saved"),
-                  ),
+                itemBuilder: (_) => [
+                  PopupMenuItem(value: 'archive', child: Text('feed.archive'.tr)),
+                  PopupMenuItem(value: 'report', child: Text('feed.reportPost'.tr, style: TextStyle(color: Colors.red))),
                 ],
               ),
             ),
 
-            if (post.isCommentVisible)
+            /// ---------- POST TEXT ----------
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: AppText(post.content, fontSize: 14, color: colors.onSurface),
+            ),
+
+            /// ---------- POST IMAGE ----------
+            if (post.postImage != null)
               Container(
-                padding: const EdgeInsets.all(15),
-                color: Colors.grey.shade50,
-                child: Column(
-                  children: [
-                    ...post.comments.map((commentData) {
-                      final String commentText = (commentData is Map) ? (commentData['text'] ?? "") : commentData.toString();
-                      final String userImg = (commentData is Map) ? (commentData['image'] ?? "https://i.pravatar.cc/150?u=99") : "https://i.pravatar.cc/150?u=99";
-
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomNetworkImage(
-                              imageUrl: userImg,
-                              height: 28,
-                              width: 28,
-                              borderRadius: 100,
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(color: Colors.grey.shade200),
-                                ),
-                                child: Text(commentText, style: const TextStyle(fontSize: 13)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    const SizedBox(height: 10),
-                    TextField(
-                      onChanged: (val) => controller.commentTexts[index] = val,
-                      controller: TextEditingController.fromValue(
-                        TextEditingValue(
-                          text: controller.commentTexts[index] ?? "",
-                          selection: TextSelection.collapsed(offset: (controller.commentTexts[index] ?? "").length),
-                        ),
-                      ),
-                      decoration: InputDecoration(
-                        hintText: "Write a comment...", filled: true, fillColor: Colors.white,
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.send, color: Color(0xFFFF6130)),
-                          onPressed: () => controller.addComment(index),
-                        ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide(color: Colors.grey.shade200)),
-                      ),
-                    ),
-                  ],
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                    border: Border.symmetric(
+                        horizontal: BorderSide(color: colors.outlineVariant.withOpacity(0.2))
+                    )
+                ),
+                child: CustomNetworkImage(
+                  imageUrl: post.postImage!,
+                  width: double.infinity,
+                  height: isWeb ? 400 : 280,
+                  fit: BoxFit.cover,
                 ),
               ),
+
+            /// ---------- INTERACTIONS ----------
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: [
+                  _iconBtn(
+                      post.isLiked ? Icons.favorite : Icons.favorite_border,
+                      post.isLiked ? Colors.red : colors.onSurfaceVariant,
+                      "${post.likes}",
+                          () => controller.toggleLike(index)
+                  ),
+                  const SizedBox(width: 15),
+                  _iconBtn(Icons.chat_bubble_outline, colors.onSurfaceVariant, "${post.commentsCount}", () => controller.toggleComments(index)),
+                  const Spacer(),
+                  IconButton(icon: const Icon(Icons.bookmark_border), onPressed: () {}),
+                ],
+              ),
+            ),
+
+            /// ---------- COMMENT SECTION ----------
+            if (post.isCommentVisible) _buildCommentSection(colors, post, index, isDark),
           ],
         ),
       );
     });
+  }
+
+  Widget _iconBtn(IconData icon, Color color, String count, VoidCallback tap) {
+    return InkWell(
+      onTap: tap,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(width: 5),
+            AppText(count, fontSize: 13),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCommentSection(ColorScheme colors, dynamic post, int index, bool isDark) {
+    return Container(
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: isDark ? colors.surfaceVariant.withOpacity(0.1) : colors.surfaceVariant.withOpacity(0.2),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
+        border: Border(top: BorderSide(color: colors.outlineVariant.withOpacity(0.3))),
+      ),
+      child: Column(
+        children: [
+          ...post.comments.map((comment) => _commentTile(colors, comment)).toList(),
+          const SizedBox(height: 10),
+          _commentInput(colors, index),
+        ],
+      ),
+    );
+  }
+
+  Widget _commentTile(ColorScheme colors, dynamic comment) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomNetworkImage(imageUrl: comment['image'] ?? "", height: 32, width: 32, borderRadius: 16),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: colors.surface, borderRadius: BorderRadius.circular(12)),
+              child: AppText(comment['text'] ?? "", fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _commentInput(ColorScheme colors, int index) {
+    return Row(
+      children: [
+        const CustomNetworkImage(imageUrl: "https://i.pravatar.cc/150?u=me", height: 35, width: 35, borderRadius: 20),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'feed.writeCommentHint'.tr,
+              hintStyle: const TextStyle(fontSize: 13),
+              filled: true,
+              fillColor: colors.surface,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide.none),
+              suffixIcon: IconButton(icon: Icon(Icons.send, color: colors.primary, size: 20), onPressed: () {}),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

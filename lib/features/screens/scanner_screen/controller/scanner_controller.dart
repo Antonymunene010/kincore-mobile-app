@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import '../../switch_space/switch_space_screen.dart'; // Apne folder structure ke hisaab se import check kar lena
+
+import '../../switch_space/switch_space_screen.dart';
 
 class ScannerController extends GetxController {
 
@@ -16,7 +17,7 @@ class ScannerController extends GetxController {
 
   // --- NAYA METHOD: Switch Screen par jane ke liye ---
   void goToSwitchSpace() {
-    Get.to(() => const SwitchSpaceScreen());
+    Get.to(() =>  SwitchSpaceScreen());
   }
 
   void shareQRCode() {

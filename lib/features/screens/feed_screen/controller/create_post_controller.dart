@@ -24,8 +24,8 @@ class CreatePostController extends GetxController {
 
   // --- NEW: Post Settings Logic (For PostSettingScreen) ---
   // Default values set ki hain jaisa image mein tha
-  var visibility = "any".obs;      // Options: 'any', 'followers', 'me'
-  var commentPrivacy = "any".obs;  // Options: 'any', 'followers', 'nobody'
+  var visibility = "Public".obs;      // Options: 'any', 'followers', 'me'
+  var commentPrivacy = "followers".obs;  // Options: 'any', 'followers', 'nobody'
 
   // Location logic
   var selectedLocation = "Select Location".obs;
@@ -60,7 +60,8 @@ class CreatePostController extends GetxController {
 
   // Final Submit Logic
   void submitPost() {
-    if (postController.text.isNotEmpty) {
+    // Agar text ya media kuch bhi ek cheez hai toh post ho jayega
+    if (postController.text.isNotEmpty || selectedMedia.isNotEmpty) {
       // API Payload simulation
       print("--- Final Post Data ---");
       print("Content: ${postController.text}");
@@ -71,16 +72,16 @@ class CreatePostController extends GetxController {
 
       Get.back();
       Get.snackbar(
-          "Success",
-          "Post created successfully!",
+          'createPost.successTitle'.tr,
+          'createPost.successMsg'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white
       );
     } else {
       Get.snackbar(
-          "Error",
-          "Please write something before posting",
+          'createPost.errorTitle'.tr,
+          'createPost.errorMsg'.tr,
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white

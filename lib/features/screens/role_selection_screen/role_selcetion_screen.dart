@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_fonts.dart';
-import '../../../core/utils/app_text.dart';
+import '../../../core/widgets/app_text.dart';
 import '../../../core/widgets/custom_button.dart';
 
 import '../../routes/dashboard_screen.dart';
 import 'widget/access_info_card.dart';
 import 'widget/role_selection_tab.dart';
 
-class RoleAccessScreen extends StatelessWidget {
-  const RoleAccessScreen({super.key});
+class RoleSelectionScreen extends StatelessWidget {
+  const RoleSelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var selectedRole = "Admin".obs;
+    var selectedRole = "role.admin".obs;
 
     /// Responsive Spacing Helpers
     final double screenWidth = Get.width;
@@ -30,7 +30,7 @@ class RoleAccessScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: AppText(
-          "Role & Access",
+          "role.title".tr,
           fontSize: 20, // Fixed Font
           fontWeight: AppFonts.semiBold,
         ),
@@ -68,13 +68,13 @@ class RoleAccessScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: AppText(
-                "Current Role: Admin",
+                "role.currentRole".trParams({'role': 'Admin'}),
                 color: AppColors.orangeColor,
                 fontSize: 12, // Fixed Font
               ),
             ),
-            const AppText(
-              "Smith Family Space",
+            AppText(
+              "role.familySpace".tr,
               fontSize: 12, // Fixed Font
               fontWeight: AppFonts.regular,
               color: Colors.grey,
@@ -92,14 +92,14 @@ class RoleAccessScreen extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: AppText(
-                "Administration Access",
+                "role.adminAccessTitle".tr,
                 fontSize: 16, // Fixed Font
                 fontWeight: AppFonts.semiBold,
               ),
             ),
             const SizedBox(height: 10),
             AppText(
-              "Admins have Full Control Over the Family Space. They CAn Mange Members, Edit The Family Tree Without Restriction, And Configure All Space Settings.",
+              "role.adminAccessDesc".tr,
               fontSize: 10, // Fixed Font
               fontWeight: AppFonts.regular,
               color: Colors.grey.shade600,
@@ -108,29 +108,29 @@ class RoleAccessScreen extends StatelessWidget {
             SizedBox(height: screenHeight * 0.03),
 
             /// Access Cards
-            const AccessInfoCard(
+            AccessInfoCard(
               icon: Icons.check_circle,
               iconColor: AppColors.orangeColor,
-              title: "Family Tree Editing",
-              subtitle: "Add Edit Or Deleted Any Profile",
+              title: "role.permission.editTree".tr,
+              subtitle: "role.permission.editTreeSub".tr,
             ),
-            const AccessInfoCard(
+            AccessInfoCard(
               icon: Icons.people,
               iconColor: AppColors.orangeColor,
-              title: "Member Management",
-              subtitle: "Invite New Users And Assign Roles",
+              title: "role.permission.memberMgmt".tr,
+              subtitle: "role.permission.memberMgmtSub".tr,
             ),
-            const AccessInfoCard(
+            AccessInfoCard(
               icon: Icons.settings,
               iconColor: AppColors.orangeColor,
-              title: "Space Settings",
-              subtitle: "Change Privacy And Notifications",
+              title: "role.permission.spaceSettings".tr,
+              subtitle: "role.permission.spaceSettingsSub".tr,
             ),
-            const AccessInfoCard(
+            AccessInfoCard(
               icon: Icons.photo_library_sharp,
               iconColor: AppColors.orangeColor,
-              title: "Content Moderation",
-              subtitle: "Manage Albums And Deleted Posts",
+              title: "role.permission.contentModeration".tr,
+              subtitle: "role.permission.contentModerationSub".tr,
             ),
 
             SizedBox(height: screenHeight * 0.01),
@@ -147,9 +147,9 @@ class RoleAccessScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.error_outline, color: Colors.red.shade400, size: 20),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: AppText(
-                      "Only The Family Creator Can Transfer Ownership Or Deleted The Entire Family Space.",
+                      "role.warning".tr,
                       fontSize: 10, // Fixed Font
                       color: AppColors.blackColor,
                       fontWeight: AppFonts.regular,
@@ -163,14 +163,14 @@ class RoleAccessScreen extends StatelessWidget {
 
             /// Contact Creator Link
             AppText(
-              "Need To Change Your Permissions?",
+              "role.changePermission".tr,
               fontSize: 10, // Fixed Font
               fontWeight: AppFonts.regular,
               color: Colors.grey.shade600,
             ),
             SizedBox(height: screenHeight * 0.02),
             CustomButton(
-              text: "Contact Family Creator",
+              text: "role.contactCreator".tr,
               onPressed: () {},
             ),
 
@@ -178,7 +178,7 @@ class RoleAccessScreen extends StatelessWidget {
 
             /// Save Button
             CustomButton(
-              text: "Save & create",
+              text: "role.saveAndCreate".tr,
               onPressed: () {
                 Get.to(() => const DashboardScreen());
               },

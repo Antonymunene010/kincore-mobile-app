@@ -69,7 +69,7 @@ class CustomIconButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         splashColor: iconColor?.withOpacity(0.1) ?? Colors.black12,
         child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.02),
+          padding: EdgeInsets.all(8),
           child: iconWidget,
         ),
       ),

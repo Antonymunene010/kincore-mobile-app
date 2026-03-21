@@ -68,66 +68,83 @@ import 'package:kincore_app/core/widgets/custom_network_image.dart'; // Path ver
 import 'package:kincore_app/features/screens/feed_screen/create_post_screen.dart';
 import '../controller/feed_controller.dart';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_network_image.dart';
+import '../controller/feed_controller.dart';
+import '../create_post_screen.dart';
+
 class PostInputArea extends StatelessWidget {
   const PostInputArea({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Controller ko find kiya taaki TextField ka data access kar sakein
     final controller = Get.find<FeedController>();
+
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Container(
       margin: const EdgeInsets.all(15),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: colors.outline.withOpacity(0.2)),
       ),
       child: Column(
         children: [
+          /// -------- INPUT ROW --------
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- UPDATED: Using CustomNetworkImage instead of CircleAvatar ---
               CustomNetworkImage(
                 imageUrl: "https://i.pravatar.cc/150?u=99",
                 height: 40,
                 width: 40,
-                borderRadius: 100, // Makes it a perfect circle
+                borderRadius: 100,
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: TextField(
                   controller: controller.postContentController,
                   maxLines: null,
-                  decoration: const InputDecoration(
-                    hintText: "What's Happening?",
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(color: colors.onSurface),
+                  decoration: InputDecoration(
+                    hintText: 'feed.whatsHappening'.tr,                    hintStyle: theme.textTheme.bodyMedium
+                        ?.copyWith(color: colors.onSurfaceVariant),
                     border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.grey),
                   ),
                 ),
               ),
             ],
           ),
+
+          const SizedBox(height: 12),
+
+          /// -------- ACTION ROW --------
           Row(
             children: [
-              Icon(Icons.image_outlined, color: Colors.grey.shade400),
+              Icon(Icons.image_outlined,
+                  color: colors.onSurfaceVariant),
               const SizedBox(width: 15),
-              Icon(Icons.gif_box_outlined, color: Colors.grey.shade400),
+              Icon(Icons.gif_box_outlined,
+                  color: colors.onSurfaceVariant),
               const SizedBox(width: 15),
-              Icon(Icons.emoji_emotions_outlined, color: Colors.grey.shade400),
+              Icon(Icons.emoji_emotions_outlined,
+                  color: colors.onSurfaceVariant),
               const Spacer(),
               CustomButton(
-                text: 'Create Post',
-                fontSize: 11,
+                text: 'feed.createPost'.tr,                fontSize: 11,
+                height: 35,
+                width: 150,
+                foregroundColor: colors.onPrimary,
+                backgroundColor: colors.primary,
                 onPressed: () {
                   Get.to(const CreatePostScreen());
                 },
-                height: 35,
-                width: 150,
-                foregroundColor: AppColors.whiteColor,
-                backgroundColor: AppColors.orangeColor,
               ),
             ],
           ),

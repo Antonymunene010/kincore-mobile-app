@@ -10,7 +10,7 @@ class AppImage extends StatelessWidget {
 
   const AppImage({
     super.key,
-    required this.imageName, // "logo.png" format
+    required this.imageName, // "logo.png"
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -20,6 +20,8 @@ class AppImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
     final String fullPath = "assets/images/$imageName";
 
     return ClipRRect(
@@ -35,10 +37,13 @@ class AppImage extends StatelessWidget {
             width: width,
             height: height,
             decoration: BoxDecoration(
-              color: Colors.grey.shade200,
+              color: colors.surfaceVariant,
               borderRadius: BorderRadius.circular(borderRadius),
             ),
-            child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+            child: Icon(
+              Icons.image_not_supported_outlined,
+              color: colors.onSurfaceVariant,
+            ),
           );
         },
       ),
